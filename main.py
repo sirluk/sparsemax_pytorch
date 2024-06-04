@@ -30,7 +30,9 @@ def sparsemax(logits: torch.Tensor, dim: int = -1) -> torch.Tensor:
     Raises:
         ValueError: In  case `logits.ndim == 1`.
     """
-    logits, idx = logits.sort(dim=dim, descending=True)
+    logits_dtype = logits.dtype
+    
+    logits, idx = logits.float().sort(dim=dim, descending=True)
 
     cs = logits.cumsum(dim=dim)
 
@@ -40,7 +42,7 @@ def sparsemax(logits: torch.Tensor, dim: int = -1) -> torch.Tensor:
     s = torch.gather(cs, dim, k - 1)
     tau = torch.exp((s - 1).log() - k.to(s.dtype).log())
 
-    return (logits - tau).clamp(min=0).gather(dim, idx.argsort(dim=-1))
+    return (logits - tau).clamp(min=0).gather(dim, idx.argsort(dim=-1)).to(logits_dtype
 
 
 def sparsemax_loss_with_logits(logits: torch.Tensor, sparsemax: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
