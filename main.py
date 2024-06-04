@@ -42,7 +42,7 @@ def sparsemax(logits: torch.Tensor, dim: int = -1) -> torch.Tensor:
     s = torch.gather(cs, dim, k - 1)
     tau = torch.exp((s - 1).log() - k.to(s.dtype).log())
 
-    return (logits - tau).clamp(min=0).gather(dim, idx.argsort(dim=-1)).to(logits_dtype
+    return (logits - tau).clamp(min=0).gather(dim, idx.argsort(dim=-1)).to(logits_dtype)
 
 
 def sparsemax_loss_with_logits(logits: torch.Tensor, sparsemax: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
